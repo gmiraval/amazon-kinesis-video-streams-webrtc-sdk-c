@@ -152,7 +152,6 @@ matrix:
         - docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -w /src/build -dit --name alpine -v $(pwd):/src alpine
         - alpine() { docker exec -it alpine "$@"; }
       install:
-        - alpine apk update
         - alpine apk add alpine-sdk cmake clang linux-headers perl bash
       script:
         - alpine cmake .. -DBUILD_STATIC_LIBS=TRUE -DBUILD_TEST=TRUE
