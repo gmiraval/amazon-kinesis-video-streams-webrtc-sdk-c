@@ -168,7 +168,8 @@ PVOID sendGstreamerAudioVideo(PVOID args)
                                             "queue leaky=2 max-size-buffers=400 ! audioconvert ! audioresample ! opusenc ! "
                                             "audio/x-opus,rate=48000,channels=2 ! appsink sync=TRUE emit-signals=TRUE name=appsink-audio",
                                             &error);
-            } else {
+/*else original*/
+/*             } else {
                 pipeline =
                     gst_parse_launch("autovideosrc ! queue ! videoconvert ! video/x-raw,width=1280,height=720,framerate=[30/1,10000000/333333] ! "
                                      "x264enc bframes=0 speed-preset=veryfast bitrate=512 byte-stream=TRUE tune=zerolatency ! "
@@ -177,7 +178,18 @@ PVOID sendGstreamerAudioVideo(PVOID args)
                                      "queue leaky=2 max-size-buffers=400 ! audioconvert ! audioresample ! opusenc ! "
                                      "audio/x-opus,rate=48000,channels=2 ! appsink sync=TRUE emit-signals=TRUE name=appsink-audio",
                                      &error);
+            } */
+
+/*else para rtsp camara*/
+            } else {
+                pipeline =
+                    gst_parse_launch("rtspsrc location=rtsp://admin:123456@192.168.1.3:554/live/ch0 short-header=TRUE ! rtph264depay ! "
+                                     "video/"
+                                     "x-h264,stream-format=byte-stream,alignment=au,profile=baseline ! "
+                                     "appsink sync=TRUE emit-signals=TRUE name=appsink-video",
+                                     &error);
             }
+
             break;
     }
 
