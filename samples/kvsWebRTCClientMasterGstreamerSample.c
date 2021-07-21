@@ -122,6 +122,7 @@ PVOID sendGstreamerAudioVideo(PVOID args)
     GstMessage* msg;
     GError* error = NULL;
     PSampleConfiguration pSampleConfiguration = (PSampleConfiguration) args;
+    PCHAR pipelineStr [10];
 
     if (pSampleConfiguration == NULL) {
         printf("[KVS GStreamer Master] sendGstreamerAudioVideo(): operation returned status code: 0x%08x \n", STATUS_NULL_ARG);
@@ -180,14 +181,19 @@ PVOID sendGstreamerAudioVideo(PVOID args)
                                      &error);
             } */
 
-/*else para rtsp camara*/
+/*else para rtsp camara que toma argv[3] como url rtsp*/
             } else {
-                pipeline =
-                    gst_parse_launch("rtspsrc location=rtsp://admin:123456@192.168.1.3:554/live/ch0 short-header=TRUE ! rtph264depay ! "
-                                     "video/"
-                                     "x-h264,stream-format=byte-stream,alignment=au,profile=baseline ! "
-                                     "appsink sync=TRUE emit-signals=TRUE name=appsink-video",
-                                     &error);
+                //printf("[GM] RtspUrl: %s \n",pSampleConfiguration->RtspUrl);
+
+                strcpy(pipelineStr, "rtspsrc location=");
+                strcat(pipelineStr, pSampleConfiguration->RtspUrl);
+                strcat(pipelineStr, " short-header=TRUE ! rtph264depay ! ");
+                strcat(pipelineStr, "video/x-h264,stream-format=byte-stream,alignment=au,profile=baseline ! ");
+                strcat(pipelineStr, "appsink sync=TRUE emit-signals=TRUE name=appsink-video");
+                   
+                //printf("[GM] gstCmd: %s \n",pipelineStr);
+              
+                pipeline = gst_parse_launch(pipelineStr,&error);
             }
 
             break;
@@ -409,6 +415,9 @@ INT32 main(INT32 argc, CHAR* argv[])
         if (STRCMP(argv[3], "testsrc") == 0) {
             printf("[KVS GStreamer Master] Using test source in GStreamer\n");
             pSampleConfiguration->useTestSrc = TRUE;
+        } else {
+            printf("[GM] url a reproducir: %s \n",argv[3]);
+            pSampleConfiguration->RtspUrl = argv[3];
         }
     }
 
