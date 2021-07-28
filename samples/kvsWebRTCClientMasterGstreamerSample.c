@@ -185,25 +185,10 @@ PVOID sendGstreamerAudioVideo(PVOID args)
             } else {
                 //printf("[GM] RtspUrl: %s \n",pSampleConfiguration->RtspUrl);
 
+//1era version sin audio
 /*                 strcpy(pipelineStr, "rtspsrc location=");
                 strcat(pipelineStr, pSampleConfiguration->RtspUrl);
                 strcat(pipelineStr, " short-header=TRUE ! rtph264depay ! ");
-                strcat(pipelineStr, "video/x-h264,stream-format=byte-stream,alignment=au,profile=baseline ! ");
-                strcat(pipelineStr, "appsink sync=TRUE emit-signals=TRUE name=appsink-video"); */
-
-//prime aprox fallida audio y video
-/*                 strcpy(pipelineStr, "rtspsrc location=");
-                strcat(pipelineStr, pSampleConfiguration->RtspUrl);
-                strcat(pipelineStr, " name=demux. ! queue ! rtph264depay ! ");
-                strcat(pipelineStr, "video/x-h264,stream-format=byte-stream,alignment=au,profile=baseline ! ");
-                strcat(pipelineStr, "appsink sync=TRUE emit-signals=TRUE name=appsink-video");
-                strcat(pipelineStr, " demux. ! queue ! rtpmp4gdepay ! aacparse ! ");
-                strcat(pipelineStr, "ffdec_aac ! audioconvert ! appsink name=appsink-audio"); */
-
-//OK con video solo encaminado
-/*                 strcpy(pipelineStr, "rtspsrc location=");
-                strcat(pipelineStr, pSampleConfiguration->RtspUrl);
-                strcat(pipelineStr, " short-header=TRUE name=source ! queue ! rtph264depay ! ");
                 strcat(pipelineStr, "video/x-h264,stream-format=byte-stream,alignment=au,profile=baseline ! ");
                 strcat(pipelineStr, "appsink sync=TRUE emit-signals=TRUE name=appsink-video"); */
 
@@ -214,10 +199,11 @@ PVOID sendGstreamerAudioVideo(PVOID args)
                 strcat(pipelineStr, "source. ! queue ! rtph264depay ! ");
                 strcat(pipelineStr, "video/x-h264,stream-format=byte-stream,alignment=au,profile=baseline ! ");
                 strcat(pipelineStr, "appsink sync=TRUE emit-signals=TRUE name=appsink-video");
-                //parte audio
+                //separador
                 strcat(pipelineStr, " ");
-
+                //parte audio
                 strcat(pipelineStr, "source. ! queue ! rtppcmadepay ! alawdec ! ");
+                strcat(pipelineStr, "audioconvert ! audioresample ! opusenc ! audio/x-opus,rate=48000,channels=2 ! ");
                 strcat(pipelineStr, "appsink sync=TRUE emit-signals=TRUE name=appsink-audio"); 
 
 
